@@ -1,0 +1,48 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s == null || t == null || s.length() < t.length()) return "";
+        
+        int[] need = new int[128];      // 记录t中每个字符需要的次数
+        int[] window = new int[128];    // 记录当前窗口中每个字符出现的次数
+        
+        for (char c : t.toCharArray()) {
+            need[c]++;
+        }
+        
+        int left = 0, right = 0;
+        int count = t.length();         // 还需要匹配的字符总数
+        int minLen = Integer.MAX_VALUE;
+        int start = 0;                   // 最小窗口的起始位置
+        
+        while (right < s.length()) {
+            char c = s.charAt(right);
+            if (need[c] > 0) {
+                window[c]++;
+                if (window[c] <= need[c]) {
+                    count--;            // 这个字符是需要的，且未超出需求
+                }
+            }
+            right++;
+            
+            // 当窗口已包含所有t中字符时，尝试缩小窗口
+            while (count == 0) {
+                // 更新最小窗口
+                if (right - left < minLen) {
+                    minLen = right - left;
+                    start = left;
+                }
+                
+                char d = s.charAt(left);
+                if (need[d] > 0) {
+                    window[d]--;
+                    if (window[d] < need[d]) {
+                        count++;        // 移除了一个必要字符，不再满足条件
+                    }
+                }
+                left++;
+            }
+        }
+        
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
+    }
+}
