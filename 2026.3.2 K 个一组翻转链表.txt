@@ -1,0 +1,31 @@
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null || k == 1) return head;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy;
+        while (true){
+            ListNode tail = prev;
+            for (int i = 0; i < k; i++) {
+                tail = tail.next;
+                if (tail == null){
+                    return dummy.next;
+                }
+            }
+            ListNode start = prev.next;
+            ListNode nextGroup = tail.next;
+            ListNode cur = start;
+            ListNode prevNode = null;
+            while (cur != nextGroup){
+                ListNode nextNode = cur.next;
+                cur.next = prevNode;
+                prevNode = cur;
+                cur = nextNode;
+            }
+
+            prev.next = prevNode;
+            start.next = nextGroup;
+            prev = start;
+        }
+    }
+}
